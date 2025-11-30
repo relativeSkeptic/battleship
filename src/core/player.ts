@@ -1,6 +1,6 @@
 import { Ship } from "../core/ship";
 
-export class Player {
+export abstract class Player {
     private _ships: Map<string, Ship>;
 
     constructor() {
