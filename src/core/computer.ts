@@ -1,22 +1,15 @@
-import { Ship } from "../core/ship";
-import { createShips } from "../utils/createShips";
-import { generateCoordinates } from "../utils/generateCoorinates";
+import { Player } from "./player";
 
-export class Computer {
-    private _ships: Map<string, Ship>;
+export class Computer extends Player {
     private _randomMoves: string[];
 
     constructor() {
-        this._ships = createShips();
+        super();
         this._randomMoves = this.generateMoves();
     }
 
-    get ships() {
-        return this._ships;
-    }
-
     private generateMoves(): string[] {
-        const coords = generateCoordinates();
+        const coords = this.generateCoordinates();
 
         for (let i = coords.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
