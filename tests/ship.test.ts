@@ -28,3 +28,8 @@ test("after ship is sunk, hit function can no longer be called", () => {
     ship.hit();
     expect(() => ship.hit()).toThrow("Ship has already been sunk");
 });
+
+test("returns correct type of ship", () => {
+    let ship = new Ship(ShipTypes.submarine, 3);
+    expect(ship.type).toBe(ShipTypes.submarine);
+});

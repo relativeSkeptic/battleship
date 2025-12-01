@@ -1,6 +1,7 @@
 import { Grid } from "./grid";
 import { Ship } from "./ship";
 import { ShipTypes } from "../types/shipTypes";
+import { ShotResult } from "../types/shotResult";
 
 export class Gameboard {
     private _board: Map<string, Grid>;
@@ -15,23 +16,58 @@ export class Gameboard {
         return this._board;
     }
 
+    get shipCoords() {
+        return this._shipCoords;
+    }
+
+    resetBoard(): void {}
+
+    allShipsSunk(): boolean {
+        return false;
+    }
+
     lookup(coordinate: string) {
-        return this._board.get(coordinate);
+        let grid = this._board.get(coordinate);
+
+        if (!grid) {
+            throw new Error(`Invalid coordinate: ${coordinate}`);
+        } else {
+            return grid;
+        }
+    }
+
+    receiveAttack(coordinate: string): ShotResult {
+        let grid = this.lookup(coordinate);
+
+        if (grid.shotResult !== ShotResult.notFired) {
+            throw new Error("Coordinate already attacked");
+        }
+
+        if (grid.isOccupied) {
+            grid.ship?.hit();
+            if (grid.ship?.isSunk) {
+                return ShotResult.sunk;
+            } else {
+                return ShotResult.hit;
+            }
+        } else {
+            return ShotResult.miss;
+        }
     }
 
     placeShip(ship: Ship, coordinates: string[]) {
         if (this.validCoordinates(coordinates) === false) {
-            throw new Error("Invalid coordinates");
+            throw new Error("Coordinate already occupied");
+        }
+
+        if (ship.length !== coordinates.length) {
+            throw new Error("Ship length mismatches total coordinates");
         }
 
         let shipCoordinates: string[] = [];
 
         for (const coordinate of coordinates) {
             let grid = this.lookup(coordinate);
-
-            if (!grid) {
-                throw new Error(`Invalid coordinate: ${coordinate}`);
-            }
 
             grid.isOccupied = true;
             grid.ship = ship;
