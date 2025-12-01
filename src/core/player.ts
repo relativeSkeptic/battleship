@@ -1,4 +1,5 @@
 import { Ship } from "../core/ship";
+import { ShipTypes } from "../types/shipTypes";
 
 export abstract class Player {
     private _ships: Map<string, Ship>;
@@ -14,11 +15,11 @@ export abstract class Player {
     protected createShips(): Map<string, Ship> {
         let newShips = new Map<string, Ship>();
 
-        newShips.set("carrier", new Ship(5));
-        newShips.set("battleship", new Ship(4));
-        newShips.set("destroyer", new Ship(3));
-        newShips.set("submarine", new Ship(3));
-        newShips.set("patrol_boat", new Ship(2));
+        newShips.set(ShipTypes.carrier, new Ship(ShipTypes.carrier, 5));
+        newShips.set(ShipTypes.battleship, new Ship(ShipTypes.battleship, 4));
+        newShips.set(ShipTypes.destroyer, new Ship(ShipTypes.destroyer, 3));
+        newShips.set(ShipTypes.submarine, new Ship(ShipTypes.submarine, 3));
+        newShips.set(ShipTypes.patrol_boat, new Ship(ShipTypes.patrol_boat, 2));
 
         return newShips;
     }
