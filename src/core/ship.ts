@@ -4,17 +4,14 @@ export class Ship {
     private _length: number;
     private _numHits: number = 0;
     private _isSunk: boolean = false;
-    private _shipType: ShipTypes;
+    private _type: ShipTypes;
 
     constructor(shipType: ShipTypes, length: number) {
         if (length < 1) {
             throw new Error("Length must be positive");
         }
-        if (shipType === ShipTypes.none) {
-            throw new Error("Invalid ship type");
-        }
         this._length = length;
-        this._shipType = shipType;
+        this._type = shipType;
     }
 
     get length(): number {
@@ -29,8 +26,8 @@ export class Ship {
         return this._isSunk;
     }
 
-    get shipType(): ShipTypes {
-        return this._shipType;
+    get type(): ShipTypes {
+        return this._type;
     }
 
     hit(): void {

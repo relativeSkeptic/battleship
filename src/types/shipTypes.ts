@@ -4,5 +4,4 @@ export enum ShipTypes {
     destroyer = "destroyer",
     submarine = "submarine",
     patrol_boat = "patrol_boat",
-    none = "none",
 }

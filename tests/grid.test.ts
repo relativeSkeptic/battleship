@@ -1,14 +1,23 @@
 import { Grid } from "../src/core/grid";
 import { ShipTypes } from "../src/types/shipTypes";
 import { ShotResult } from "../src/types/shotResult";
+import { Ship } from "../src/core/ship";
 
-describe("Grid shipId", () => {
-    Object.values(ShipTypes).forEach((ship) => {
-        test(`ship type: ${ship}`, () => {
-            const shipType = ship as ShipTypes;
+describe("Grid ship assignment", () => {
+    const shipsToTest = [
+        new Ship(ShipTypes.carrier, 5),
+        new Ship(ShipTypes.battleship, 4),
+        new Ship(ShipTypes.destroyer, 3),
+        new Ship(ShipTypes.submarine, 3),
+        new Ship(ShipTypes.patrol_boat, 2),
+    ];
+
+    shipsToTest.forEach((ship) => {
+        test(`assigning ship length ${ship.length}`, () => {
             const grid = new Grid();
-            grid.shipId = shipType;
-            expect(grid.shipId).toBe(shipType);
+            grid.ship = ship;
+
+            expect(grid.ship).toBe(ship);
         });
     });
 });

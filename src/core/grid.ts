@@ -1,14 +1,14 @@
 import { ShotResult } from "../types/shotResult";
-import { ShipTypes } from "../../src/types/shipTypes";
+import { Ship } from "./ship";
 
 export class Grid {
     private _isOccupied: boolean;
-    private _shipId: ShipTypes;
+    private _ship: Ship | null;
     private _shotResult: ShotResult;
 
     constructor() {
         this._isOccupied = false;
-        this._shipId = ShipTypes.none;
+        this._ship = null;
         this._shotResult = ShotResult.notFired;
     }
 
@@ -16,8 +16,8 @@ export class Grid {
         this._isOccupied = occupied;
     }
 
-    set shipId(shipName: ShipTypes) {
-        this._shipId = shipName;
+    set ship(ship: Ship) {
+        this._ship = ship;
     }
 
     set shotResult(result: ShotResult) {
@@ -28,8 +28,8 @@ export class Grid {
         return this._isOccupied;
     }
 
-    get shipId(): ShipTypes {
-        return this._shipId;
+    get ship(): Ship | null {
+        return this._ship;
     }
 
     get shotResult(): ShotResult {
