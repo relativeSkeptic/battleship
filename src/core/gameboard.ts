@@ -6,9 +6,11 @@ import { ShotResult } from "../types/shotResult";
 export class Gameboard {
     private _board: Map<string, Grid>;
     private _shipCoords: Map<ShipTypes, string[]>;
+    private _ships: Map<ShipTypes, Ship>;
 
     constructor() {
         this._shipCoords = new Map<ShipTypes, string[]>();
+        this._ships = new Map<ShipTypes, Ship>();
         this._board = this.createBoard();
     }
 
@@ -23,11 +25,19 @@ export class Gameboard {
     resetBoard(): void {}
 
     allShipsSunk(): boolean {
-        return false;
+        for (const coords of this._shipCoords.values()) {
+            const firstCoord = coords[0];
+            const grid = this.lookup(firstCoord);
+
+            if (!grid.ship?.isSunk) {
+                return false;
+            }
+        }
+        return true;
     }
 
     lookup(coordinate: string) {
-        let grid = this._board.get(coordinate);
+        const grid = this._board.get(coordinate);
 
         if (!grid) {
             throw new Error(`Invalid coordinate: ${coordinate}`);
@@ -37,7 +47,7 @@ export class Gameboard {
     }
 
     receiveAttack(coordinate: string): ShotResult {
-        let grid = this.lookup(coordinate);
+        const grid = this.lookup(coordinate);
 
         if (grid.shotResult !== ShotResult.notFired) {
             throw new Error("Coordinate already attacked");
@@ -64,10 +74,10 @@ export class Gameboard {
             throw new Error("Ship length mismatches total coordinates");
         }
 
-        let shipCoordinates: string[] = [];
+        const shipCoordinates: string[] = [];
 
         for (const coordinate of coordinates) {
-            let grid = this.lookup(coordinate);
+            const grid = this.lookup(coordinate);
 
             grid.isOccupied = true;
             grid.ship = ship;
@@ -75,10 +85,11 @@ export class Gameboard {
         }
 
         this._shipCoords.set(ship.type, shipCoordinates);
+        this._ships.set(ship.type, ship);
     }
 
     private createBoard(): Map<string, Grid> {
-        let board = new Map<string, Grid>();
+        const board = new Map<string, Grid>();
         const letters = "ABCDEFGHIJ".split("");
         const coordinates: string[] = [];
 
@@ -89,7 +100,7 @@ export class Gameboard {
         }
 
         for (const coordinate of coordinates) {
-            let grid = new Grid();
+            const grid = new Grid();
             board.set(coordinate, grid);
         }
 

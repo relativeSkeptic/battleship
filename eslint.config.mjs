@@ -1,33 +1,9 @@
-import tsParser from "@typescript-eslint/parser";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
-import eslintRecommended from "@eslint/js";
-import prettier from "eslint-config-prettier";
+import js from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 
-export default [
-  {
-    files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["dist", "build", "node_modules"],
-
-    languageOptions: {
-      parser: tsParser,
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        console: "readonly",
-        describe: "readonly",
-        test: "readonly",
-        expect: "readonly",
-        browser: "readonly",
-        node: "readonly",
-      },
-    },
-
-    plugins: { "@typescript-eslint": tsPlugin },
-
-    rules: {
-      ...eslintRecommended.configs.recommended.rules,
-      ...tsPlugin.configs.recommended.rules,
-      ...prettier.rules,
-    },
-  },
-];
+export default defineConfig([
+  { files: ["**/*.{js,mjs,cjs,ts,mts,cts}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
+  tseslint.configs.recommended,
+]);

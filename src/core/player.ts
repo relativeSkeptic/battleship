@@ -13,7 +13,7 @@ export abstract class Player {
     }
 
     protected createShips(): Map<string, Ship> {
-        let newShips = new Map<string, Ship>();
+        const newShips = new Map<string, Ship>();
 
         newShips.set(ShipTypes.carrier, new Ship(ShipTypes.carrier, 5));
         newShips.set(ShipTypes.battleship, new Ship(ShipTypes.battleship, 4));
