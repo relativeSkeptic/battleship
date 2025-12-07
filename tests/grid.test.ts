@@ -23,7 +23,7 @@ describe("Grid ship assignment", () => {
 });
 
 describe("Grid isOccupied", () => {
-    let grid = new Grid();
+    const grid = new Grid();
 
     test("isOccupied: true", () => {
         grid.isOccupied = true;

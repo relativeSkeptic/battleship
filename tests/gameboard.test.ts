@@ -92,7 +92,7 @@ describe("Lookup function", () => {
 
 describe("placeShip function", () => {
     test("valid coordinates", () => {
-        let gameboard = new Gameboard();
+        const gameboard = new Gameboard();
         const ship = new Ship(ShipTypes.destroyer, 3);
         const coords = ["A1", "A2", "A3"];
 
@@ -106,7 +106,7 @@ describe("placeShip function", () => {
     });
 
     test("overlapping ships", () => {
-        let gameboard = new Gameboard();
+        const gameboard = new Gameboard();
         const ship1 = new Ship(ShipTypes.destroyer, 3);
         const coords1 = ["A1", "A2", "A3"];
 
@@ -121,7 +121,7 @@ describe("placeShip function", () => {
     });
 
     test("mismatched ship length versus coordinate array", () => {
-        let gameboard = new Gameboard();
+        const gameboard = new Gameboard();
         const ship = new Ship(ShipTypes.destroyer, 3);
         const coords = ["A1", "A2", "A3", "A4"];
 

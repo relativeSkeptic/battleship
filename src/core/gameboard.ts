@@ -5,13 +5,13 @@ import { ShotResult } from "../types/shotResult";
 
 export class Gameboard {
     private _board: Map<string, Grid>;
+    private _ships: Ship[];
     private _shipCoords: Map<ShipTypes, string[]>;
-    private _ships: Map<ShipTypes, Ship>;
 
     constructor() {
-        this._shipCoords = new Map<ShipTypes, string[]>();
-        this._ships = new Map<ShipTypes, Ship>();
         this._board = this.createBoard();
+        this._ships = [];
+        this._shipCoords = new Map<ShipTypes, string[]>();
     }
 
     get board() {
@@ -22,14 +22,16 @@ export class Gameboard {
         return this._shipCoords;
     }
 
-    resetBoard(): void {}
+    resetBoard(): void {
+        this._board.clear();
+        this._ships = [];
+        this._shipCoords.clear();
+        this._board = this.createBoard();
+    }
 
     allShipsSunk(): boolean {
-        for (const coords of this._shipCoords.values()) {
-            const firstCoord = coords[0];
-            const grid = this.lookup(firstCoord);
-
-            if (!grid.ship?.isSunk) {
+        for (const ship of this._ships) {
+            if (ship.isSunk === false) {
                 return false;
             }
         }
@@ -56,17 +58,20 @@ export class Gameboard {
         if (grid.isOccupied) {
             grid.ship?.hit();
             if (grid.ship?.isSunk) {
+                grid.shotResult = ShotResult.sunk;
                 return ShotResult.sunk;
             } else {
+                grid.shotResult = ShotResult.hit;
                 return ShotResult.hit;
             }
         } else {
+            grid.shotResult = ShotResult.miss;
             return ShotResult.miss;
         }
     }
 
-    placeShip(ship: Ship, coordinates: string[]) {
-        if (this.validCoordinates(coordinates) === false) {
+    placeShip(ship: Ship, coordinates: string[]): void {
+        if (this.validateCoordinates(coordinates) === false) {
             throw new Error("Coordinate already occupied");
         }
 
@@ -85,7 +90,7 @@ export class Gameboard {
         }
 
         this._shipCoords.set(ship.type, shipCoordinates);
-        this._ships.set(ship.type, ship);
+        this._ships.push(ship);
     }
 
     private createBoard(): Map<string, Grid> {
@@ -107,12 +112,83 @@ export class Gameboard {
         return board;
     }
 
-    private validCoordinates(cordinates: string[]): boolean {
-        for (const cordinate of cordinates) {
-            if (this.lookup(cordinate)?.isOccupied === true) {
-                return false;
+    private validateCoordinates(coordinates: string[]): boolean {
+        if (coordinates.length < 2) {
+            throw new Error(`Coordinates length is too short`);
+        }
+        for (const coordinate of coordinates) {
+            if (this.lookup(coordinate)?.isOccupied === true) {
+                throw new Error(
+                    `Coordinate is already occupied: ${coordinate}`,
+                );
             }
         }
+        if (this.isStraightLine(coordinates) !== true) {
+            throw new Error(
+                `Coordinates are not in a straight line ${coordinates}`,
+            );
+        }
         return true;
+    }
+
+    private isStraightLine(coordinates: string[]): boolean {
+        //Converts both values to integers for easier testing
+        const XYcoordinate = coordinates.map((coordinate) =>
+            this.convertToXYcoordinates(coordinate),
+        );
+
+        const xCoordinate = XYcoordinate.map((coordinate) => coordinate.x);
+        const yCoordinate = XYcoordinate.map((coordinate) => coordinate.y);
+
+        let allXSame = true;
+        for (const x of xCoordinate) {
+            if (x !== xCoordinate[0]) {
+                allXSame = false;
+            }
+        }
+
+        let allYSame = true;
+        for (const y of yCoordinate) {
+            if (y !== yCoordinate[0]) {
+                allYSame = false;
+            }
+        }
+
+        //Ship is neither horizontal or vertical
+        if (allXSame !== true && allYSame !== true) {
+            return false;
+        }
+
+        const sorted = [...XYcoordinate];
+
+        if (allXSame) {
+            sorted.sort((a, b) => a.y - b.y);
+        } else {
+            sorted.sort((a, b) => a.x - b.x);
+        }
+
+        for (let i = 1; i < sorted.length; i++) {
+            if (allXSame) {
+                if (sorted[i].y !== sorted[i - 1].y + 1) {
+                    return false;
+                }
+            } else {
+                if (sorted[i].x !== sorted[i - 1].x + 1) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private convertToXYcoordinates(coordinate: string) {
+        const column = coordinate[0].toUpperCase();
+        const row = parseInt(coordinate.slice(1));
+
+        const x = column.charCodeAt(0) - "A".charCodeAt(0);
+        const y = row - 1;
+
+        return { x, y };
     }
 }
