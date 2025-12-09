@@ -22,6 +22,10 @@ export class Gameboard {
         return this._shipCoords;
     }
 
+    get ships() {
+        return this._ships;
+    }
+
     resetBoard(): void {
         this._board.clear();
         this._ships = [];
