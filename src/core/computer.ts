@@ -8,6 +8,17 @@ export class Computer extends Player {
         this._randomMoves = this.generateMoves();
     }
 
+    takeTurn(): string {
+        if (this._randomMoves.length === 0) {
+            throw new Error("No moves left");
+        }
+        return this._randomMoves.pop()!;
+    }
+
+    reset(): void {
+        this._randomMoves = this.generateMoves();
+    }
+
     private generateMoves(): string[] {
         const coords = this.generateCoordinates();
 
